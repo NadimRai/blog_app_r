@@ -6,18 +6,33 @@ RSpec.feature "Listing Articles" do
     @article2 = Article.create(title: "The second article", body: "Body of 2nd article", user: @john)
   end
 
-	scenario "A user lists all articles" do
-
-	visit "/"
-	expect(page).to have_content(@article1.title) 
-	expect(page).to have_content(@article1.body) 
-	expect(page).to have_content(@article2.title) 
-	expect(page).to have_content(@article2.body) 
-	expect(page).to have_link(@article1.title) 
-	expect(page).to have_link(@article2.title)
-	end
-
-	scenario "A user has no articles" do 
+	scenario "with articles created and user not signed in" do 
+    visit "/"
+    
+    expect(page).to have_content(@article1.title)
+    expect(page).to have_content(@article1.body)
+    expect(page).to have_content(@article2.title)
+    expect(page).to have_content(@article2.body)
+    expect(page).to have_link(@article1.title)
+    expect(page).to have_link(@article2.title)
+    expect(page).not_to have_link("New Article")
+    
+  end
+  
+  scenario "with articles created and user signed in" do 
+    login_as(@john)
+    visit "/"
+    
+    expect(page).to have_content(@article1.title)
+    expect(page).to have_content(@article1.body)
+    expect(page).to have_content(@article2.title)
+    expect(page).to have_content(@article2.body)
+    expect(page).to have_link(@article1.title)
+    expect(page).to have_link(@article2.title)
+    expect(page).to have_link("New Article")
+    
+  end
+  scenario "A user has no articles" do 
     Article.delete_all
     
     visit "/"
@@ -34,4 +49,6 @@ RSpec.feature "Listing Articles" do
     end
     
   end
+  
+  
 end
